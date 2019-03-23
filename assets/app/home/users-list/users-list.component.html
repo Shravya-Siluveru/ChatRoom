@@ -1,0 +1,59 @@
+<ul class="list-group">
+    <li *ngFor="let user of usersList" class="list-group-item list-group-item-action"> 
+        <a (click)="openProfileAsModal(user)" style="cursor: pointer;" >
+            <img src="http://localhost:3000/images/user_logo.png" height="40" width="40">
+            {{ user.userName }} <span *ngIf="onlineUsers.includes(user.userName); else offlineCircle">
+              <i class="fa fa-circle" style="color: green;"></i></span>
+            <ng-template #offlineCircle>
+                <i class="fa fa-circle" style="color: red;"></i>
+            </ng-template>
+    </a>
+    </li>
+</ul>
+
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="onClose()">
+          <span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body text-center" *ngIf="clickedUser != null">
+              <img src="http://localhost:3000/images/user_logo.png" alt="user-logo" style="width:50%">
+              <h1> {{ clickedUser.fullName }} </h1>
+                <table class="table">
+                    <tbody>
+                      <tr>
+                        <td>User Name:</td>
+                        <td>{{ clickedUser.userName }}</td>
+                      </tr>
+                      <tr>
+                        <td>Date of birth</td>
+                        <td>{{ clickedUser.dateOfBirth | date:'mediumDate'}}</td>
+                      </tr>
+                      <tr>
+                        <td>Phone</td>
+                        <td>{{ clickedUser.phone }}</td>
+                      </tr>
+                      <tr>
+                          <td>Gender</td>
+                          <td>{{ clickedUser.gender | titlecase }}</td>
+                      </tr>
+                      <tr>
+                        <td>Email</td>
+                        <td>{{ clickedUser.email }}</td>
+                      </tr>
+                      <tr>
+                          <td>Phone</td>
+                          <td>{{ clickedUser.phone }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="onClose()" >Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+

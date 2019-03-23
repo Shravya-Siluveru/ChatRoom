@@ -1,0 +1,119 @@
+<app-header [isAdmin]="authIsAdmin" [isLoggedIn]="authLoggedIn"></app-header>
+
+<div class="row">
+    <div class="col-md-6">
+    <ul class="list-group" style="list-style-type: none;">
+        <h3 style="background-color: #f2f2f2;" class="text-center">USERS LIST</h3>
+        <button class="btn btn-success btn-small float-right" (click)="addUser()" 
+                style="width: 30%; margin: 10px;">ADD NEW USER</button>   
+            <li *ngFor="let user of allUsers" > 
+                <div *ngIf="user.userName != 'admin'" class="list-group-item list-group-item-action">
+                <a (click)="viewUserDetails(user)" style="cursor: pointer;" >
+                <h5> {{ user.fullName }} </h5></a>
+                </div>
+            </li>
+    </ul>
+    </div>
+
+    <div class="col-md-6">
+            <div class="alert alert-success" role="alert" *ngIf="alertMessage">
+                    {{ alertMessage }}
+                </div>
+                <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+                        {{ errorMessage }}
+                </div>
+      <div *ngIf="action=='view'" [ngStyle]="{'display':display}">
+            <table class="table table-responsive table-light mt-5">
+                    <tbody>
+                        <tr>
+                          <td>        
+                            <button class="btn btn-primary" (click)="editUser(clickedUser)" >EDIT</button></td>
+                          <td>    
+                            <button class="btn btn-danger" 
+                            (click)="deleteUser(clickedUser)"
+                            ng-confirm-click="Are you sure to delete this user ?">DELETE</button></td>
+                        </tr>
+                      <tr>
+                        <td>User Name:</td>
+                        <td>{{ clickedUser.userName }}</td>
+                      </tr>
+                      <tr>
+                        <td>Date of birth</td>
+                        <td>{{ clickedUser.dateOfBirth | date:'mediumDate'}}</td>
+                      </tr>
+                      <tr>
+                          <td>Gender</td>
+                          <td>{{ clickedUser.gender | titlecase }}</td>
+                      </tr>
+                      <tr>
+                        <td>Email</td>
+                        <td>{{ clickedUser.email }}</td>
+                      </tr>
+                      <tr>
+                          <td>Phone</td>
+                          <td>{{ clickedUser.phone }}</td>
+                      </tr>
+                    </tbody>
+            </table>
+      </div>
+      <div *ngIf="(action == 'add' || action == 'edit')" class="table-light p-2">
+          <h3 class="text-center"> {{ action | uppercase }} USER</h3>
+          <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+              <div class="form-group" >
+                  <label for="fullname">Full Name</label>
+                  <input type="text" class="form-control" id="fullname" 
+                  placeholder="Enter full name" formControlName="fullname" >
+              </div>
+
+              <div class="form-group">
+                      <label for="dob">Date of Birth</label>
+                      <input type="text" class="form-control" id="dob" 
+                      placeholder="Format: mm/dd/yyyy" formControlName="dob" >
+                  </div>
+              
+                  <div class="form-group">
+                  <label for="username">User name</label>
+                  <input type="text" class="form-control" id="username" 
+                  placeholder="Set unique user name" formControlName="username" >
+              </div>
+              
+              <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" class="form-control" id="email" 
+                  placeholder="Format: name@domain.com" formControlName="email" >
+              </div>
+
+              <div class="form-group">
+                  <label for="phone">Phone number</label>
+                  <input type="tel" class="form-control" id="phone" 
+                  placeholder="Format: 123-456-7890" formControlName="phone" 
+                  pattern='\d{3}[\-]\d{3}[\-]\d{4}' required>
+              </div>
+              
+              <div class="form-group">
+                  <label>Gender</label><br>
+                  <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" id="male" class="custom-control-input" 
+                      formControlName="gender"  value="male">
+                      <label class="custom-control-label" for="male">Male</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" id="female" class="custom-control-input" 
+                      formControlName="gender" value="female">
+                      <label class="custom-control-label" for="female">Female</label>
+                  </div>               
+              </div>
+
+              <div class="form-group" >
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="password" 
+                  placeholder="Enter password" formControlName="password" >
+              </div>
+              
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+      </div>
+  </div>
+
+
+</div>

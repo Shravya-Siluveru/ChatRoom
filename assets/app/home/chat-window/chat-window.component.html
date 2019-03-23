@@ -1,0 +1,57 @@
+<div class="container clearfix">
+        <div class="chat">
+          <div class="chat-header clearfix">
+            <img src="http://localhost:3000/images/user_logo.png" alt="user" height="60" width="60" />
+            
+            <div class="chat-about">
+              <div class="chat-with"> {{ currentUser }}</div>
+              <div class="chat-with">Online</div>
+            </div>
+            <i class="fa fa-circle" style="color: green;"></i>
+          </div>
+          
+          <div class="chat-history">
+            <ul>
+              <li>
+                <div *ngFor="let message of allMessages">
+                  <div class="alert alert-info" *ngIf="message.isNotification == true; else messageBlock">
+                    {{ message.sender }} {{ message.message }} at {{ message.time | date: 'shortTime' }}
+                  </div>
+                  <ng-template #messageBlock>
+                    <div *ngIf="message.sender == currentUser; else receivedMessageBlock">
+                      <div class="message-data align-right">
+                          <span class="message-data-time"> {{ message.time | date: 'shortTime' }}  </span> &nbsp; &nbsp;
+                          <span class="message-data-name" > {{ currentUser }}  </span>
+                            <img src="http://localhost:3000/images/user_logo.png" alt="user" 
+                                class="img img-responsive float-right" height="40" width="40" />
+                        </div>
+                        <div class="message bg-secondary float-right">
+                          {{ message.message }}
+                        </div>
+                    </div>
+                    <ng-template #receivedMessageBlock>
+                        <div class="message-data">
+                            <img src="http://localhost:3000/images/user_logo.png" alt="user" 
+                            class="img img-responsive float-left" height="40" width="40" />
+                          <span class="message-data-name">{{ message.sender }}</span>
+                          <span class="message-data-time">{{ message.time | date: 'shortTime' }}</span> &nbsp; &nbsp;
+                        </div>
+                        <div class="message bg-info">
+                          {{ message.message }}
+                        </div>
+                    </ng-template>
+                    </ng-template>
+                  </div>
+              </li>
+            </ul>          
+          </div> 
+          
+          <div class="chat-message">
+            <textarea name="message-to-send" id="message-to-send" 
+                      placeholder ="Type your message" rows="3" [(ngModel)]="newMessage"></textarea> 
+            <button class="btn btn-primary btn-sm" (click)="sendMessage()" >Send</button>
+          </div>        
+        </div>  
+      </div>
+
+    

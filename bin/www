@@ -1,0 +1,145 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('node-rest:server');
+var http = require('http');
+var socketIO = require('socket.io');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP and Socket servers.
+ */
+
+var server = http.createServer(app);
+
+var io = socketIO.listen(server);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+io.on('connection', onSocketConnection);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+
+/**
+ * Event listener for Socket "connection" event.
+ */
+onlineUsers = [];
+ function onSocketConnection(socket){
+    
+    socketID = socket.id;
+    console.log(socket.id + " CONNECTED");
+
+    // when a user joins chat
+    socket.on('JoinChat', function(username){
+      onlineUsers.push({socketID: socket.id, username: username});
+      setTimeout(function () {
+        socket.broadcast.emit("NewUserJoinedNotification", 
+               { user: username, message: "joined chat", time: new Date() });  
+      }, 1000);
+
+    })
+
+    // when a message is received from chat
+    socket.on('Message', function(data){
+
+      //broadcast new message to all 
+      io.emit("NewMessage", data );
+    })
+
+    // when online users list is requested
+    socket.on('GetOnlineUsers', function(){
+      setTimeout(function () {
+        io.emit("SendOnlineUsers", { onlineUsers: onlineUsers } );
+      }, 2000);
+    })
+    
+    // when a user disconnects from socket
+    socket.on('disconnect', (data) => {
+      user = null;
+     // user = onlineUsers.find(x => x.socketID == socketID).username   ;
+      setTimeout(function () {
+        console.log(socketID + " DISCONNECTED");
+        onlineUsers = onlineUsers.filter(e => e.socketID !== socketID);
+      }, 2000); 
+      setTimeout(function () {
+        console.log(socketID + " DISCONNECTED");
+        io.emit("UserDisconnected", { user: user , message: "left chat", time: new Date() });
+      }, 2000);
+    })
+
+ }

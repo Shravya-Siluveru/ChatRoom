@@ -1,0 +1,114 @@
+<app-header [isAdmin]="authIsAdmin" [isLoggedIn]="authLoggedIn"></app-header>
+
+<div class="col-md-6 offset-md-3" *ngIf="user">
+    <div class="card">
+        <h5 class="card-header">View Profile</h5>
+        <div class="card-body">
+        <div class="card-text">
+                <table class="table">
+                        <tbody>
+                          <tr>
+                            <td>User Name:</td>
+                            <td>{{ currentUser }}</td>
+                          </tr>
+                          <tr>
+                            <td>Full Name:</td>
+                            <td>{{ user.fullName }}</td>
+                          </tr>
+                          <tr>
+                            <td>Email Address</td>
+                            <td>{{ user.email }}</td>
+                          </tr>
+                          <tr>
+                            <td>Phone</td>
+                            <td>{{ user.phone }}</td>
+                          </tr>
+                          <tr>
+                              <td>Gender</td>
+                              <td>{{ user.gender }}</td>
+                            </tr>
+                            <tr>
+                            <td>Date of Birth</td>
+                            <td>{{ user.dateOfBirth | date:'longDate' }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+        </div>
+        <a (click)="editUser()" class="btn btn-primary">EDIT</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}" *ngIf="user">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header"> EDIT PROFILE
+                <button type="button" class="close" aria-label="Close" (click)="onClose()">
+                  <span aria-hidden="true">&times;</span></button>
+              </div>
+              <div class="modal-body text-center">
+                    <form [formGroup]="editUserForm" (ngSubmit)="onSubmit()" *ngIf="editUserForm">
+                        <div class="form-group">
+                            <label for="username">User name</label>
+                            <input type="text" class="form-control" id="username" 
+                            placeholder="Enter user name"
+                            value="{{currentUser}}" readonly="readonly">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fullname">Full Name</label>
+                            <input type="text" class="form-control" id="fullname" 
+                                placeholder="Enter full name" formControlName="fullname" 
+                               >
+                        </div>
+                            
+                        <div class="form-group">
+                              <label for="dob">Date of Birth</label>
+                              <input type="date" class="form-control" id="dob" 
+                                  placeholder="Enter date of birth" formControlName="dob"
+                                  >
+                        </div>
+                            
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" 
+                                placeholder="Enter email" formControlName="email"
+                                v>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone number</label>
+                            <input type="tel" class="form-control" id="phone" 
+                            placeholder="Format: 123-456-7890" formControlName="phone" 
+                            pattern='\d{3}[\-]\d{3}[\-]\d{4}' required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Gender</label><br>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="male" class="custom-control-input" 
+                                formControlName="gender"  value="male">
+                                <label class="custom-control-label" for="male">Male</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="female" class="custom-control-input" 
+                                formControlName="gender" value="female">
+                                <label class="custom-control-label" for="female">Female</label>
+                            </div>               
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">New Password</label>
+                            <input type="password" class="form-control" id="password" 
+                                placeholder="Enter password" formControlName="password">
+                            <caption style="display: inline;">(Enter new password only if you want to change it)</caption>
+                        </div>
+                            
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)="onClose()" >Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
